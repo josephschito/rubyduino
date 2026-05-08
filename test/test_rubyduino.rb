@@ -8,7 +8,7 @@ class TestRubyduino < Minitest::Test
   end
 
   def test_spinel_snapshot_is_available
-    assert_equal "a70208094343b9d4cd306218c909d99781661c2f", Rubyduino::Spinel::COMMIT
+    assert_equal "e7f714f213ca572912f7214f358a927f8e2152e5", Rubyduino::Spinel::COMMIT
     assert_path_exists File.join(Rubyduino::Spinel::ROOT, "README.md")
   end
 

@@ -2,7 +2,7 @@
 
 module Rubyduino
   module Spinel
-    COMMIT = "a70208094343b9d4cd306218c909d99781661c2f"
+    COMMIT = "e7f714f213ca572912f7214f358a927f8e2152e5"
     ROOT = File.expand_path("../../vendor/spinel", __dir__)
   end
 end
