@@ -36,14 +36,21 @@ def capture!(*cmd)
 end
 
 def command?(name)
-  executable(name)
+  !executable(name).nil?
 end
 
 def executable(name)
-  ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).find do |dir|
+  ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).filter_map do |dir|
     path = File.join(dir, name)
-    File.file?(path) && File.executable?(path)
-  end
+    path if File.file?(path) && File.executable?(path)
+  end.first
+end
+
+def runnable_executable?(path)
+  _output, status = Open3.capture2e(path, "-?")
+  status.success?
+rescue SystemCallError
+  false
 end
 
 def find_port
@@ -57,7 +64,27 @@ def find_port
 end
 
 def find_avrdude
-  executable("avrdude")
+  candidates = ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).filter_map do |dir|
+    path = File.join(dir, "avrdude")
+    path if File.file?(path) && File.executable?(path)
+  end
+
+  candidates.concat(
+    Dir.glob(
+      [
+        "/Applications/Arduino.app/Contents/**/bin/avrdude",
+        "/opt/homebrew/**/bin/avrdude",
+        "/usr/local/**/bin/avrdude"
+      ]
+    )
+  )
+
+  candidates.uniq.find { |path| runnable_executable?(path) }
+end
+
+def avrdude_conf_for(avrdude)
+  conf = File.expand_path("../etc/avrdude.conf", File.dirname(avrdude))
+  File.file?(conf) ? conf : nil
 end
 
 root_dir = File.expand_path("..", __dir__)
@@ -151,8 +178,8 @@ begin
   run!("avr-size", "--mcu=#{mcu}", "--format=avr", elf_file) if command?("avr-size")
 
   warn "Flash: #{hex_file} -> #{port}"
-  conf = "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/etc/avrdude.conf"
-  conf_args = File.file?(conf) ? ["-C#{conf}"] : []
+  conf = avrdude_conf_for(avrdude)
+  conf_args = conf ? ["-C#{conf}"] : []
   run!(avrdude, *conf_args, "-p#{mcu}", "-carduino", "-P#{port}", "-b#{baud}", "-D", "-Uflash:w:#{hex_file}:i")
 ensure
   FileUtils.rm_f(ast_tmp)
