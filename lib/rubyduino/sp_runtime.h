@@ -450,15 +450,67 @@ void serial_begin(uint32_t baud) {
   UCSR0C = (uint8_t)((1 << UCSZ01) | (1 << UCSZ00));
 }
 
+static int16_t rd_uno_serial_peek_buf = -1;
+static uint32_t rd_uno_serial_timeout_ms = 1000;
+
 int serial_available(void) {
+  if (rd_uno_serial_peek_buf != -1) {
+    return 1;
+  }
   return (UCSR0A & (uint8_t)(1 << RXC0)) ? 1 : 0;
 }
 
 int serial_read(void) {
-  if (!serial_available()) {
+  int v;
+
+  if (rd_uno_serial_peek_buf != -1) {
+    v = rd_uno_serial_peek_buf;
+    rd_uno_serial_peek_buf = -1;
+    return v;
+  }
+
+  if (!(UCSR0A & (uint8_t)(1 << RXC0))) {
     return -1;
   }
   return UDR0;
+}
+
+int serial_peek(void) {
+  if (rd_uno_serial_peek_buf != -1) {
+    return rd_uno_serial_peek_buf;
+  }
+  if (!(UCSR0A & (uint8_t)(1 << RXC0))) {
+    return -1;
+  }
+  rd_uno_serial_peek_buf = (int16_t)UDR0;
+  return rd_uno_serial_peek_buf;
+}
+
+void serial_end(void) {
+  UCSR0B = 0;
+  rd_uno_serial_peek_buf = -1;
+}
+
+void serial_flush(void) {
+  /* Wait until the TX shift register is empty. */
+  while (!(UCSR0A & (uint8_t)(1 << UDRE0))) {
+  }
+  while (!(UCSR0A & (uint8_t)(1 << TXC0))) {
+  }
+  /* Clear the TXC0 flag (write 1 to it). */
+  UCSR0A |= (uint8_t)(1 << TXC0);
+}
+
+int serial_available_for_write(void) {
+  return (UCSR0A & (uint8_t)(1 << UDRE0)) ? 1 : 0;
+}
+
+void serial_set_timeout(uint32_t timeout_ms) {
+  rd_uno_serial_timeout_ms = timeout_ms;
+}
+
+uint32_t serial_get_timeout(void) {
+  return rd_uno_serial_timeout_ms;
 }
 
 void serial_write(uint8_t value) {

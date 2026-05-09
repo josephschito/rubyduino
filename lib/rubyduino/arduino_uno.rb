@@ -81,6 +81,12 @@ module ArduinoUNO
   ffi_func :interrupt_fired, [:uint8], :uint8
   ffi_func :digital_pin_to_interrupt, [:uint8], :int8
   ffi_func :analog_reference, [:uint8], :void
+  ffi_func :serial_end, [], :void
+  ffi_func :serial_flush, [], :void
+  ffi_func :serial_peek, [], :int
+  ffi_func :serial_available_for_write, [], :int
+  ffi_func :serial_set_timeout, [:uint32], :void
+  ffi_func :serial_get_timeout, [], :uint32
 end
 
 def pin_mode(pin, mode)
@@ -341,4 +347,28 @@ end
 
 def analog_reference(type)
   ArduinoUNO.analog_reference(type)
+end
+
+def serial_end
+  ArduinoUNO.serial_end
+end
+
+def serial_flush
+  ArduinoUNO.serial_flush
+end
+
+def serial_peek
+  ArduinoUNO.serial_peek
+end
+
+def serial_available_for_write
+  ArduinoUNO.serial_available_for_write
+end
+
+def serial_set_timeout(timeout_ms)
+  ArduinoUNO.serial_set_timeout(timeout_ms)
+end
+
+def serial_get_timeout
+  ArduinoUNO.serial_get_timeout
 end
