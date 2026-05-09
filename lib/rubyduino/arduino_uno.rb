@@ -178,6 +178,14 @@ def delay_us(us)
   ArduinoUNO.delay_us(us)
 end
 
+def sleep_ms(ms)
+  ArduinoUNO.delay_ms(ms)
+end
+
+def sleep_us(us)
+  ArduinoUNO.delay_us(us)
+end
+
 def millis
   ArduinoUNO.millis
 end
@@ -263,6 +271,14 @@ def constrain(value, low, high)
 end
 
 def sq(value)
+  ArduinoUNO.sq(value)
+end
+
+def clamp(value, low, high)
+  ArduinoUNO.constrain(value, low, high)
+end
+
+def square(value)
   ArduinoUNO.sq(value)
 end
 
@@ -370,7 +386,65 @@ def is_graph?(c)
   ArduinoUNO.is_graph(c) == 1
 end
 
+# Ruby-idiomatic predicate aliases (without the is_ prefix). The Arduino-named
+# versions above are kept as porting aliases.
+def alpha?(c)
+  ArduinoUNO.is_alpha(c) == 1
+end
+
+def digit?(c)
+  ArduinoUNO.is_digit(c) == 1
+end
+
+def alphanumeric?(c)
+  ArduinoUNO.is_alpha_numeric(c) == 1
+end
+
+def space?(c)
+  ArduinoUNO.is_space(c) == 1
+end
+
+def whitespace?(c)
+  ArduinoUNO.is_whitespace(c) == 1
+end
+
+def uppercase?(c)
+  ArduinoUNO.is_upper_case(c) == 1
+end
+
+def lowercase?(c)
+  ArduinoUNO.is_lower_case(c) == 1
+end
+
+def ascii?(c)
+  ArduinoUNO.is_ascii(c) == 1
+end
+
+def control?(c)
+  ArduinoUNO.is_control(c) == 1
+end
+
+def printable?(c)
+  ArduinoUNO.is_printable(c) == 1
+end
+
+def punctuation?(c)
+  ArduinoUNO.is_punct(c) == 1
+end
+
+def hex_digit?(c)
+  ArduinoUNO.is_hexadecimal_digit(c) == 1
+end
+
+def graph?(c)
+  ArduinoUNO.is_graph(c) == 1
+end
+
 def random_seed(seed)
+  ArduinoUNO.random_seed(seed)
+end
+
+def srand(seed)
   ArduinoUNO.random_seed(seed)
 end
 
@@ -387,6 +461,10 @@ def tone(pin, frequency, duration_ms = 0)
 end
 
 def no_tone(pin)
+  ArduinoUNO.no_tone(pin)
+end
+
+def stop_tone(pin)
   ArduinoUNO.no_tone(pin)
 end
 
