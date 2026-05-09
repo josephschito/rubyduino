@@ -12,7 +12,7 @@ Comparison of Rubyduino's exposed API (`lib/rubyduino/arduino_uno.rb`, `lib/ruby
 
 - [x] `analogRead`
 - [x] `analogWrite`
-- [ ] `analogReference`
+- [x] `analogReference` (as `analog_reference`)
 
 ## Time
 
@@ -25,19 +25,20 @@ Comparison of Rubyduino's exposed API (`lib/rubyduino/arduino_uno.rb`, `lib/ruby
 
 - [x] `pulseIn`
 - [x] `pulseIn` with timeout (as `pulse_in_timeout`)
+- [x] `pulseInLong` (as `pulse_in_long`)
 - [x] `shiftIn`
 - [x] `shiftOut`
-- [ ] `tone`
-- [ ] `noTone`
-- [ ] `pulseInLong`
+- [x] `tone` (with optional duration)
+- [x] `noTone` (as `no_tone`)
 
 ## Interrupts
 
 - [x] `interrupts`
 - [x] `noInterrupts` (as `no_interrupts`)
-- [ ] `attachInterrupt`
-- [ ] `detachInterrupt`
-- [ ] `digitalPinToInterrupt`
+- [x] `attachInterrupt` (as `attach_interrupt`, flag-based polling rather than callback)
+- [x] `detachInterrupt` (as `detach_interrupt`)
+- [x] `digitalPinToInterrupt` (as `digital_pin_to_interrupt`)
+- [x] `interrupt_fired?` predicate (rubyduino-specific, replaces callback model)
 
 ## Serial
 
@@ -47,74 +48,59 @@ Comparison of Rubyduino's exposed API (`lib/rubyduino/arduino_uno.rb`, `lib/ruby
 - [x] `Serial.write` (single byte)
 - [x] `Serial.print` — string + int (via codegen)
 - [x] `Serial.println` — string + int (via codegen)
-- [ ] `Serial.print`/`println` for float/double, byte, with format args (BIN/HEX/OCT/DEC, decimal places)
+- [x] `Serial.print`/`println` with HEX/BIN/OCT/DEC base (via codegen)
+- [x] `Serial.print`/`println` for float (via codegen + dedicated formatter)
+- [x] `Serial.end` (as `serial_end`)
+- [x] `Serial.flush` (as `serial_flush`)
+- [x] `Serial.peek` (as `serial_peek`)
+- [x] `Serial.setTimeout` (as `serial_set_timeout`)
+- [x] `Serial.getTimeout` (as `serial_get_timeout`)
+- [x] `Serial.availableForWrite` (as `serial_available_for_write`)
+- [x] `Serial.find` (as `serial_find` + `serial_find?`)
+- [x] `Serial.findUntil` (as `serial_find_until` + `serial_find_until?`)
+- [x] `Serial.parseInt` (as `serial_parse_int`)
+- [x] `Serial.parseFloat` (as `serial_parse_float`)
+- [x] `Serial.readByteTimeout` (rubyduino-specific primitive for read_bytes-style loops)
 - [ ] `Serial.write(buf, len)` overload
-- [ ] `Serial.end`
-- [ ] `Serial.flush`
-- [ ] `Serial.peek`
-- [ ] `Serial.setTimeout`
-- [ ] `Serial.availableForWrite`
-- [ ] `Serial.find`
-- [ ] `Serial.findUntil`
-- [ ] `Serial.parseInt`
-- [ ] `Serial.parseFloat`
-- [ ] `Serial.readBytes`
-- [ ] `Serial.readBytesUntil`
-- [ ] `Serial.readString`
-- [ ] `Serial.readStringUntil`
+- [ ] `Serial.readBytes` / `readBytesUntil` — buildable on top of `serial_read_byte_timeout`
+- [ ] `Serial.readString` / `readStringUntil`
 - [ ] `serialEvent` callback
 
 ## Random
 
 - [x] `random(a..b)` with literal range (via codegen)
-- [ ] `random` with non-literal range (variables fall through to plain `rand`)
-- [ ] `randomSeed`
+- [x] `random(low..high)` with non-literal range (via codegen → `random_range`)
+- [x] `randomSeed` (as `random_seed`)
+- [x] `random_range(low, high)` and `random_max(high)` callable directly
 
 ## Bits & Bytes
 
-- [ ] `bit`
-- [ ] `bitRead`
-- [ ] `bitWrite`
-- [ ] `bitSet`
-- [ ] `bitClear`
-- [ ] `highByte`
-- [ ] `lowByte`
+- [x] `bit` / `bitRead` / `bitWrite` / `bitSet` / `bitClear` / `highByte` / `lowByte` (snake_case)
 
 ## Math / Utility Helpers
 
-- [ ] `map`
-- [ ] `constrain`
-- [ ] `sq`
+- [x] `map` (as `map_value`)
+- [x] `constrain`
+- [x] `sq`
 - [x] `abs`, `min`, `max`, `pow`, `sqrt` — provided by Ruby itself, not the gem
 
 ## Character Classification
 
-- [ ] `isAlpha`
-- [ ] `isDigit`
-- [ ] `isSpace`
-- [ ] `isWhitespace`
-- [ ] `isAlphaNumeric`
-- [ ] `isAscii`
-- [ ] `isControl`
-- [ ] `isHexadecimalDigit`
-- [ ] `isLowerCase`
-- [ ] `isUpperCase`
-- [ ] `isPrintable`
-- [ ] `isPunct`
+- [x] `isAlpha`/`isDigit`/`isAlphaNumeric`/`isSpace`/`isWhitespace`/`isUpperCase`/`isLowerCase`/`isAscii`/`isControl`/`isPrintable`/`isPunct`/`isHexadecimalDigit` (snake_case + `?` predicate variants)
 
 ## Other Core
 
-- [ ] `yield` (cooperative yield hook)
+- [x] `yield` (as `arduino_yield` — Ruby keyword conflict requires the prefix)
 - [ ] Arduino `String` class
 - [ ] `PROGMEM` / `pgm_read_*`
 
 ## Bundled Libraries
 
-- [ ] `Wire` (I²C)
-- [ ] `SPI`
-- [ ] `EEPROM`
+- [x] `Wire` (I²C master mode)
+- [x] `SPI`
+- [x] `EEPROM`
+- [x] `Servo` (single-servo, Timer1)
 - [ ] `SoftwareSerial`
-- [ ] `Servo`
 - [ ] `Stepper`
 - [ ] `LiquidCrystal`
 - [ ] `SD`
@@ -126,11 +112,17 @@ Comparison of Rubyduino's exposed API (`lib/rubyduino/arduino_uno.rb`, `lib/ruby
 - [x] `A0`–`A5`
 - [x] `LED_BUILTIN`
 - [x] `LSBFIRST`, `MSBFIRST`
+- [x] `BIN`, `OCT`, `DEC`, `HEX`
+- [x] `INT_LOW` / `INT_CHANGE` / `INT_FALLING` / `INT_RISING`
+- [x] `AREF_EXTERNAL` / `AREF_DEFAULT` / `AREF_INTERNAL`
+- [x] `SPI_MODE0..3`, `SPI_CLOCK_DIV2..128`
 
-## Highest-Impact Gaps for Sketch Authors
+## Remaining Gaps
 
-1. `tone` / `noTone`
-2. `map` / `constrain`
-3. `attachInterrupt` / `detachInterrupt`
-4. Richer `Serial.print` formatting (float, HEX/BIN/etc.)
-5. `Wire` / `SPI` / `EEPROM` libraries
+- `Serial.readBytes` / `readBytesUntil` / `readString` / `readStringUntil` (buildable in user code over `serial_read_byte_timeout`)
+- `serialEvent` callback
+- Arduino `String` class
+- `PROGMEM` / `pgm_read_*`
+- `SoftwareSerial`, `Stepper`, `LiquidCrystal`, `SD`
+- True multi-servo support (current implementation handles one servo)
+- Function-pointer callbacks for `attachInterrupt` (current model uses flag polling)
