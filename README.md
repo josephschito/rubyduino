@@ -1,7 +1,6 @@
 <div align="center">
 
-# Rubyduino 
-[Experimental]
+# Rubyduino
 
 <img width="250" height="250" alt="image copy" src="https://github.com/user-attachments/assets/156c7d41-ed42-43f3-a720-ed2e9c12b52c" />
 
