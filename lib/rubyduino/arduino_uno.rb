@@ -146,6 +146,7 @@ module ArduinoUNO
   ffi_func :servo_read, [], :uint8
   ffi_func :servo_read_microseconds, [], :uint16
   ffi_func :servo_attached, [], :uint8
+  ffi_func :arduino_yield, [], :void
 end
 
 def pin_mode(pin, mode)
@@ -610,4 +611,8 @@ end
 
 def servo_attached?
   ArduinoUNO.servo_attached == 1
+end
+
+def arduino_yield
+  ArduinoUNO.arduino_yield
 end

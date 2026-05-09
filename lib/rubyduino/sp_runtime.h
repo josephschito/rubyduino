@@ -1195,6 +1195,12 @@ uint8_t servo_attached(void) {
   return (rd_servo_pin >= 0) ? 1 : 0;
 }
 
+void arduino_yield(void) {
+  /* Cooperative-multitasking hook. No-op on UNO since there's no
+   * scheduler — defined so portable sketches that call it for ESP32
+   * etc. still compile here. */
+}
+
 void serial_write(uint8_t value) {
   while (!(UCSR0A & (uint8_t)(1 << UDRE0))) {
   }
