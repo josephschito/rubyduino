@@ -1398,6 +1398,11 @@ int is_hexadecimal_digit(int c) {
   return 0;
 }
 
+int is_graph(int c) {
+  /* Printable but not whitespace — Arduino's isGraph(). */
+  return (c > 32 && c <= 126) ? 1 : 0;
+}
+
 void random_seed(uint32_t seed) {
   if (seed == 0) {
     return;

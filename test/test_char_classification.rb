@@ -7,7 +7,7 @@ class TestCharClassification < Minitest::Test
   HELPERS = %i[
     is_alpha is_digit is_alpha_numeric is_space is_whitespace
     is_upper_case is_lower_case is_ascii is_control is_printable
-    is_punct is_hexadecimal_digit
+    is_punct is_hexadecimal_digit is_graph
   ].freeze
 
   def test_codegen_emits_each_helper

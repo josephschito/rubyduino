@@ -88,6 +88,7 @@ module ArduinoUNO
   ffi_func :is_printable, [:int], :int
   ffi_func :is_punct, [:int], :int
   ffi_func :is_hexadecimal_digit, [:int], :int
+  ffi_func :is_graph, [:int], :int
   ffi_func :random_seed, [:uint32], :void
   ffi_func :random_range, [:int32, :int32], :int32
   ffi_func :random_max, [:int32], :int32
@@ -313,6 +314,10 @@ def is_hexadecimal_digit(c)
   ArduinoUNO.is_hexadecimal_digit(c)
 end
 
+def is_graph(c)
+  ArduinoUNO.is_graph(c)
+end
+
 def is_alpha?(c)
   ArduinoUNO.is_alpha(c) == 1
 end
@@ -359,6 +364,10 @@ end
 
 def is_hexadecimal_digit?(c)
   ArduinoUNO.is_hexadecimal_digit(c) == 1
+end
+
+def is_graph?(c)
+  ArduinoUNO.is_graph(c) == 1
 end
 
 def random_seed(seed)
