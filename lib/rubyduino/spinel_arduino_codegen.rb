@@ -5,23 +5,28 @@
 # file is CLI-oriented, so we load only its Compiler definition and keep the
 # same AST-file input/output-file flow as the upstream footer.
 
-ROOT = File.expand_path("../..", __dir__)
-SPINEL_ROOT = File.join(ROOT, "vendor/spinel")
+module SpinelArduinoCodegen
+  ROOT = File.expand_path("../..", __dir__)
+  SPINEL_ROOT = File.join(ROOT, "vendor/spinel")
 
-def load_spinel_compiler
-  path = File.join(SPINEL_ROOT, "spinel_codegen.rb")
-  source = File.read(path)
-  marker = "\n# ---- Main ----\n"
-  split_at = source.index(marker)
-  unless split_at
-    warn "spinel_arduino_codegen: cannot find codegen main marker"
-    exit(1)
+  # Load Spinel's Compiler class without executing its CLI footer. The split
+  # marker isolates the class definitions from the bottom-of-file `Compiler.new`
+  # entry point so we can replace it with our own argv handling below.
+  def self.load_spinel_compiler
+    path = File.join(SPINEL_ROOT, "spinel_codegen.rb")
+    source = File.read(path)
+    marker = "\n# ---- Main ----\n"
+    split_at = source.index(marker)
+    unless split_at
+      warn "spinel_arduino_codegen: cannot find codegen main marker"
+      exit(1)
+    end
+
+    TOPLEVEL_BINDING.eval(source[0...split_at], path)
   end
-
-  TOPLEVEL_BINDING.eval(source[0...split_at], path)
 end
 
-load_spinel_compiler
+SpinelArduinoCodegen.load_spinel_compiler
 
 module SpinelArduinoCodegen
   def compile_no_recv_call_expr(nid, mname)
