@@ -22,6 +22,10 @@ module ArduinoUNO
   INT_FALLING = 2
   INT_RISING = 3
 
+  AREF_EXTERNAL = 0
+  AREF_DEFAULT = 1
+  AREF_INTERNAL = 3
+
   ffi_func :pin_mode, [:uint8, :uint8], :int
   ffi_func :digital_write, [:uint8, :uint8], :int
   ffi_func :digital_read, [:uint8], :int
@@ -76,6 +80,7 @@ module ArduinoUNO
   ffi_func :detach_interrupt, [:uint8], :void
   ffi_func :interrupt_fired, [:uint8], :uint8
   ffi_func :digital_pin_to_interrupt, [:uint8], :int8
+  ffi_func :analog_reference, [:uint8], :void
 end
 
 def pin_mode(pin, mode)
@@ -332,4 +337,8 @@ end
 
 def digital_pin_to_interrupt(pin)
   ArduinoUNO.digital_pin_to_interrupt(pin)
+end
+
+def analog_reference(type)
+  ArduinoUNO.analog_reference(type)
 end

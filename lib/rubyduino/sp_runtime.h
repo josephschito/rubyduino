@@ -270,6 +270,13 @@ int digital_read(uint8_t pin) {
   return ((*reg & (uint8_t)(1 << rd_uno_bit(pin))) != 0) ? 1 : 0;
 }
 
+static uint8_t rd_uno_admux_ref = (uint8_t)(1 << REFS0);
+
+void analog_reference(uint8_t type) {
+  /* Arduino constants: EXTERNAL=0 -> REFS=00, DEFAULT=1 -> REFS=01, INTERNAL=3 -> REFS=11. */
+  rd_uno_admux_ref = (uint8_t)((type & 0x03) << REFS0);
+}
+
 int analog_read(uint8_t pin) {
   uint8_t channel = pin;
 
@@ -281,7 +288,7 @@ int analog_read(uint8_t pin) {
     return -1;
   }
 
-  ADMUX = (uint8_t)((1 << REFS0) | channel);
+  ADMUX = (uint8_t)(rd_uno_admux_ref | channel);
   ADCSRA = (uint8_t)((1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0));
   ADCSRA |= (uint8_t)(1 << ADSC);
 
