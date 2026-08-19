@@ -1,5 +1,19 @@
 AllCops:
   TargetRubyVersion: 3.2
+  NewCops: disable
+  Exclude:
+    - "vendor/**/*"
+    - "examples/**/*.rb"
+    - "lib/rubyduino/arduino_uno.rb"
+    - "lib/rubyduino/spinel_arduino_codegen.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "bin/rubyduino"
+
+Style/SoleNestedConditional:
+  Exclude:
+    - "bin/rubyduino"
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes

@@ -9,7 +9,8 @@ Gem::Specification.new do |spec|
   spec.email = ["joseph.schito@gmail.com"]
 
   spec.summary = "Compile Ruby sketches for Arduino boards."
-  spec.description = "Rubyduino compiles Ruby code for Arduino boards and uploads the generated firmware over a serial port."
+  spec.description = "Rubyduino compiles Ruby code for Arduino boards " \
+                     "and uploads the generated firmware over a serial port."
   spec.homepage = "https://github.com/josephschito/rubyduino"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
@@ -27,7 +28,7 @@ Gem::Specification.new do |spec|
       (f == gemspec) ||
         (f == "vendor/spinel") ||
         f.start_with?(*%w[Gemfile .gitignore test/ .github/ .rubocop.yml]) ||
-        (%w[bin/console bin/setup].include?(f))
+        %w[bin/console bin/setup].include?(f)
     end
   end
 
