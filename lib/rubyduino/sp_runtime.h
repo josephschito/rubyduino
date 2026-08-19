@@ -19,6 +19,15 @@ typedef struct {
   mrb_int last;
 } sp_Range;
 
+typedef struct {
+  mrb_int cls_id;
+} sp_Class;
+
+#define sp_int_add(a, b) ((mrb_int)((a) + (b)))
+#define sp_int_sub(a, b) ((mrb_int)((a) - (b)))
+#define sp_int_mul(a, b) ((mrb_int)((a) * (b)))
+#define sp_int_neg(a) ((mrb_int)(-(a)))
+
 #ifndef TRUE
 #define TRUE 1
 #endif
