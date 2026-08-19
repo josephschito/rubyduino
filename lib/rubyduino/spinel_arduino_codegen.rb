@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 # Arduino UNO codegen layer for Spinel.
 #
-# This file intentionally leaves spinel_codegen.rb unchanged. Spinel's codegen
-# file is CLI-oriented, so we load only its Compiler definition and keep the
-# same AST-file input/output-file flow as the upstream footer.
+# This file intentionally leaves Spinel's analyzer and code generator unchanged.
+# It runs the upstream analysis phase, then loads only the Compiler definition
+# from the CLI-oriented code generator before applying the Arduino extensions.
+
+require "rbconfig"
+require "tempfile"
 
 ROOT = File.expand_path("../..", __dir__)
 SPINEL_ROOT = File.join(ROOT, "vendor/spinel")
@@ -11,7 +14,7 @@ SPINEL_ROOT = File.join(ROOT, "vendor/spinel")
 def load_spinel_compiler
   path = File.join(SPINEL_ROOT, "spinel_codegen.rb")
   source = File.read(path)
-  marker = "\n# ---- Main ----\n"
+  marker = "\n# ---- Main (codegen) ----\n"
   split_at = source.index(marker)
   unless split_at
     warn "spinel_arduino_codegen: cannot find codegen main marker"
@@ -106,13 +109,20 @@ if ast_file.nil?
   exit(1)
 end
 
-compiler = Compiler.new
-compiler.read_text_ast(File.read(ast_file))
-compiler.compile
+analyzer = File.join(SPINEL_ROOT, "spinel_analyze.rb")
+Tempfile.create(["spinel-analysis", ".ir"]) do |ir_file|
+  ir_file.close
+  abort "spinel_arduino_codegen: analysis failed" unless system(RbConfig.ruby, analyzer, ast_file, ir_file.path)
 
-result = compiler.build_output
-if out_file
-  File.write(out_file, result)
-else
-  print result
+  compiler = Compiler.new
+  compiler.read_text_ast(File.read(ast_file))
+  compiler.load_analysis_buf(File.read(ir_file.path))
+  compiler.generate_code
+
+  result = compiler.build_output
+  if out_file
+    File.write(out_file, result)
+  else
+    print result
+  end
 end

@@ -8,7 +8,7 @@ class TestRubyduino < Minitest::Test
   end
 
   def test_spinel_snapshot_is_available
-    assert_equal "e7f714f213ca572912f7214f358a927f8e2152e5", Rubyduino::Spinel::COMMIT
+    assert_equal "b80ba94b7163e822b34758b1de1555a3da32374b", Rubyduino::Spinel::COMMIT
     assert_path_exists File.join(Rubyduino::Spinel::ROOT, "README.md")
   end
 
@@ -18,6 +18,7 @@ class TestRubyduino < Minitest::Test
     assert_includes spec.files, "bin/rubyduino"
     assert_includes spec.files, "lib/rubyduino/spinel_arduino_codegen.rb"
     assert_includes spec.files, "vendor/spinel/README.md"
+    assert_includes spec.files, "vendor/spinel/spinel_analyze.rb"
     assert_includes spec.files, "vendor/spinel/spinel_codegen.rb"
     refute_includes spec.files, "vendor/spinel/.git"
   end

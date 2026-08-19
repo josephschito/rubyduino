@@ -1,3 +1,4 @@
 [submodule "vendor/spinel"]
 	path = vendor/spinel
 	url = https://github.com/matz/spinel
+	branch = self-host

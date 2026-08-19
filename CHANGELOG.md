@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-19
+
+- Update vendored Spinel to `b80ba94b` from the compatible `self-host` branch
+- Adapt Arduino code generation to Spinel's separate analysis and codegen pipeline
+- Add the `sp_Class` value type and integer arithmetic helpers required by the updated code generator to the AVR runtime
+
 ## [0.2.0] - 2026-05-08
 
 - Expand the ArduinoUNO API with PWM, microsecond delays, millis/micros timing, pulse measurement, serial I/O, shift helpers, and interrupt control
